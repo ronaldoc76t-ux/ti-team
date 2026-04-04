@@ -15,14 +15,17 @@ Repository pour l'équipe TI avec les profils d'agents et leur mémoire.
 | **Software Architect** | Architecture applicative, patterns, qualité |
 | **Infrastructure Architect** | Serveurs, réseau, stockage, supervision |
 
-## Autres rôles
+## Rôles - Développeurs
 
 | Rôle | Description |
 |------|-------------|
-| **Intégrateur** | Intégration des systèmes, pipelines CI/CD |
-| **Technical Lead** | Coordination technique, code review |
-| **Sys Admin** | Infrastructure, servers, sécurité |
-| **Développeurs** | Développement applicatif |
+| **Frontend** | React, Vue, Angular, UI/UX |
+| **Backend** | APIs, services, logique métier |
+| **Fullstack** | Frontend + Backend |
+| **Mobile** | iOS, Android, React Native, Flutter |
+| **QA / Test** | Tests automatisés, qualité |
+| **DevOps** | CI/CD, containers, IaC |
+| **Data Engineer** | ETL, pipelines, Big Data |
 
 ## Structure
 
