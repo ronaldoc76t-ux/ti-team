@@ -1,0 +1,20 @@
+{
+  "project": "CMDB ServiceNow Discovery",
+  "description": "Système de découverte automatique des assets TI et synchronisation vers CMDB ServiceNow",
+  "infrastructure": {
+    "onpremise": {
+      "sources": ["VMware vCenter", "OpenShift", "Bare Metal"],
+      "network_zones": ["ITSG-33 Apps", "ITSG-33 Data", "Industrielle Purdue"]
+    },
+    "cloud": {
+      "target": "ServiceNow CMDB",
+      "connectivity": "Express Route"
+    }
+  },
+  "constraints": {
+    "itsg33": true,
+    "discovery_engine_zone": "ITSG-33 Apps",
+    "target_cmdb_zone": "DMZ -> ServiceNow Cloud"
+  },
+  "phases": ["architecture", "design", "implementation", "scripts", "config", "tests", "deployment"]
+}

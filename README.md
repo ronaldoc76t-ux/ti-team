@@ -32,6 +32,9 @@ Repository pour l'équipe TI avec les profils d'agents et leur mémoire.
 ```
 ti-team/
 ├── agents/          # Profils des agents
+├── architecture/    # Documents d'architecture
+├── discussions/     # Discussions inter-profils
+├── processes/       # Processus équipe
 ├── memory/          # Mémoire de l'équipe
 ├── scripts/         # Scripts utilitaires
 └── README.md        # Ce fichier

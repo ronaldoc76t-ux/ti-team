@@ -1,0 +1,74 @@
+# Bare Metal / SNMP Configuration
+# Discovery of physical servers via SNMP or SSH
+
+targets:
+  # Subnet approach
+  - target: "10.0.10.0/24"
+    type: "subnet"
+    
+  # Specific hosts
+  - target: "10.0.20.10"
+    type: "host"
+    
+# SNMP Settings
+snmp:
+  # Version: 2c ou 3
+  version: "2c"
+  
+  # Community string
+  community: "public"
+  
+  # Port SNMP
+  port: 161
+  
+  # Timeout
+  timeout: 5
+  
+  # Retry
+  retries: 3
+  
+  # OIDs à collecter
+  oid_map:
+    sysDescr: "1.3.6.1.2.1.1.1.0"
+    sysName: "1.3.6.1.2.1.1.5.0"
+    sysContact: "1.3.6.1.2.1.1.4.0"
+    sysLocation: "1.3.6.1.2.1.1.6.0"
+    sysUpTime: "1.3.6.1.2.1.1.3.0"
+    
+    # Hardware
+    hrDeviceDescr: "1.3.6.1.2.1.25.3.2.1.3"
+    hrProcessorFrwID: "1.3.6.1.2.1.25.3.3.1.2"
+    hrMemorySize: "1.3.6.1.2.1.25.2.2.1.4"
+
+# SSH Fallback Settings
+ssh:
+  enabled: true
+  
+  # Port
+  port: 22
+  
+  # Timeout
+  timeout: 10
+  
+  # Auth method: key or password
+  auth_method: "key"
+  
+  # Key path (si auth_method = key)
+  key_path: "/etc/cmdb-discovery/ssh_keys/id_rsa"
+  
+  # User (si auth_method = password)
+  # password loaded from SSH_PASSWORD env var
+
+# Discovery Settings
+discovery:
+  # Timeout global pour SNMP
+  snmp_timeout: 30
+  
+  # Parallel queries
+  parallel: 10
+  
+  #过滤 - Ignorer les hosts sans reponse
+  ignore_no_response: true
+  
+  # Decouverte complete (vs incrementale)
+  full_discovery: true

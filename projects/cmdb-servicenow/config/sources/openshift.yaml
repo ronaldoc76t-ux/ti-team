@@ -1,0 +1,74 @@
+# OpenShift / Kubernetes Configuration
+# Connect to OpenShift API for pod and service discovery
+
+clusters:
+  - name: "ocp-prod"
+    api_url: "${OPENSHIFT_API_URL}"
+    # Token is loaded from environment variable
+    token_env: "OPENSHIFT_TOKEN"
+    verify_ssl: true
+    
+  - name: "ocp-stage"
+    api_url: "${OPENSHIFT_API_URL_STAGE}"
+    token_env: "OPENSHIFT_TOKEN_STAGE"
+    verify_ssl: true
+
+# Connection Settings
+connection:
+  # Timeout API (secondes)
+  timeout: 30
+  
+  # Retry settings
+  max_retries: 3
+  retry_delay: 2
+
+# Discovery Settings
+discovery:
+  # Namespace à découvrir (vide = toutes)
+  namespaces: []
+  
+  # Inclure les pods système
+  include_system: false
+  
+  # Inclure les jobs et cronjobs
+  include_jobs: false
+
+# Resources à découvrir
+resources:
+  pods:
+    enabled: true
+    labels:
+      - name
+      - namespace
+      - phase
+      - node
+      - created-by
+      
+  services:
+    enabled: true
+    labels:
+      - name
+      - namespace
+      - type
+      - cluster-ip
+      
+  nodes:
+    enabled: true
+    labels:
+      - name
+      - kubernetes.io/hostname
+      - node-role.kubernetes.io
+      
+  persistentvolumes:
+    enabled: false
+    # Pas discover PV pour CMDB
+    
+# Labels à collecter
+labels:
+  # Labels importants pour CMDB
+  important:
+    - "app.kubernetes.io/name"
+    - "app.kubernetes.io/component"
+    - "app.kubernetes.io/instance"
+    - "app.kubernetes.io/version"
+    - "environment"

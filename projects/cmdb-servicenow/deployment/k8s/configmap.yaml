@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cmdb-discovery-config
+  namespace: ti-operations
+data:
+  # VMware Configuration
+  vcenter_host: "vcenter.internal.com"
+  
+  # OpenShift Configuration
+  openshift_api_url: "https://api.ocp.internal.com:6443"
+  
+  # Discovery Settings
+  schedule_cron: "0 2 * * *"
+  log_level: "INFO"
+  
+  # ServiceNow Configuration (non-sensitive)
+  servicenow_instance: "company.service-now.com"

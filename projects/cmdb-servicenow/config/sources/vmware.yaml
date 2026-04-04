@@ -1,0 +1,65 @@
+# VMware vCenter Configuration
+# Connect to vCenter for VM discovery
+
+vcenters:
+  - name: "vcenter-prod"
+    host: "${VCENTER_HOST}"
+    port: 443
+    
+  - name: "vcenter-dr"
+    host: "${VCENTER_HOST_DR}"
+    port: 443
+
+# Connection Settings
+connection:
+  # Timeout de connexion (secondes)
+  timeout: 30
+  
+  # Mode de connexion
+  # auto: utilise SmartConnect avec automatiquement detech SSL
+  # unverified: accepte tous les certificats
+  connection_mode: "unverified"
+  
+# Discovery Settings
+discovery:
+  # Inclure les templates
+  skip_templates: true
+  
+  # Collecter les tags VMware
+  collect_tags: true
+  
+  # Filtrer par datacenter
+  #datacenters:
+  #  - "DC1"
+  #  - "DC2"
+  
+  # Filtrer par folder
+  #folders:
+  #  - "/vm/Production"
+  #  - "/vm/Staging"
+
+# Property Collection
+properties:
+  # Proprietes systeme
+  system:
+    - name
+    - config.guestFullName
+    - config.uuid
+    - runtime.powerState
+    - runtime.host
+  
+  # Proprietes reseau
+  network:
+    - config.hardware.device (pour MAC addresses)
+    - guest.ipAddress
+  
+  # Proprietes ressources
+  resource:
+    - config.hardware.numCPU
+    - config.hardware.memoryMB
+    - config.hardware.device (pour disks)
+  
+  # Proprietes datastore
+  datastore:
+    - config.datastoreUrl
+    - datastore.name

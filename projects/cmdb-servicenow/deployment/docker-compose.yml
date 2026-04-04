@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  cmdb-discovery:
+    image: cmdb-discovery:latest
+    container_name: cmdb-discovery
+    environment:
+      - CONFIG_PATH=/app/config/config.yaml
+      - SERVICENOW_USER=${SERVICENOW_USER}
+      - SERVICENOW_PASS=${SERVICENOW_PASS}
+      - VCENTER_HOST=${VCENTER_HOST}
+      - VCENTER_USER=${VCENTER_USER}
+      - VCENTER_PASS=${VCENTER_PASS}
+      - OPENSHIFT_API_URL=${OPENSHIFT_API_URL}
+      - OPENSHIFT_TOKEN=${OPENSHIFT_TOKEN}
+    volumes:
+      - ./config:/app/config:ro
+      - ./logs:/var/log
+    networks:
+      - cmdb-net
+    restart: unless-stopped
+
+networks:
+  cmdb-net:
+    driver: bridge

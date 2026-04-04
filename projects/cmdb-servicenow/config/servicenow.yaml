@@ -1,0 +1,73 @@
+# ServiceNow CMDB Configuration
+# Connection and target table settings
+
+# Instance Settings
+instance: "${SERVICENOW_INSTANCE}"
+
+# Authentication
+auth:
+  # Method: basic ou oauth
+  method: "basic"
+  
+  # Credentials loaded from environment:
+  # SERVICENOW_USER
+  # SERVICENOW_PASS
+
+# Connection
+connection:
+  # Timeout (secondes)
+  timeout: 30
+  
+  # Retry
+  max_retries: 3
+  
+  # Verify SSL
+  verify_ssl: true
+
+# CMDB Tables
+tables:
+  # Table for virtual machines
+  vm: "cmdb_ci_vm"
+  
+  # Table for physical servers
+  server: "cmdb_ci_server"
+  
+  # Table for Kubernetes pods
+  k8s_pod: "cmdb_ci_kubernetes_pod"
+  
+  # Table for Kubernetes services
+  k8s_svc: "cmdb_ci_kubernetes_service"
+  
+  # Table for clusters
+  k8s_cluster: "cmdb_ci_kubernetes_cluster"
+  
+  # Table for datastores
+  datastore: "cmdb_ci_datastore"
+
+# Upsert Settings
+upsert:
+  # Unique key field per table
+  unique_keys:
+    cmdb_ci_vm: "vm_uuid"
+    cmdb_ci_server: "serial_number"
+    cmdb_ci_kubernetes_pod: "name"
+    cmdb_ci_kubernetes_service: "name"
+    
+  # Update existing records
+  update_existing: true
+
+# Field Mapping
+mapping:
+  # Champ source de découverte
+  discovery_source: "auto_cmdb"
+  
+  # Date de découverte (auto)
+  discovery_date: "auto"  # Format ISO8601
+
+# Rate Limiting
+rate_limit:
+  # Requetes par seconde
+  requests_per_second: 10
+  
+  # Delai entre batchs
+  batch_delay: 0.1

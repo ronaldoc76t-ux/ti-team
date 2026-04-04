@@ -1,0 +1,73 @@
+# CMDB ServiceNow Discovery - Configuration Principale
+
+# Discovery Settings
+discovery:
+  # Nom de la source de découverte (pour CMDB)
+  source_name: "auto_cmdb"
+  
+  # Zone ITSG-33 par défaut
+  default_zone: "ITSG-33"
+  
+  # Timeout global (secondes)
+  timeout: 300
+  
+  # Retry en cas d'échec
+  max_retries: 3
+  retry_delay: 5
+
+# Schedule (cron format)
+schedule:
+  # Heure d'exécution quotidienne (2am par défaut)
+  cron: "0 2 * * *"
+  
+  # Activer l'exécution planifiée
+  enabled: true
+
+# Collectors - Activation
+collectors:
+  vmware:
+    enabled: true
+    sources:
+      - name: "vcenter-prod"
+        host: "${VCENTER_HOST}"
+        user: "${VCENTER_USER}"
+        password: "${VCENTER_PASS}"
+    config:
+      skip_templates: true
+      collect_tags: true
+      
+  openshift:
+    enabled: true
+    sources:
+      - name: "ocp-prod"
+        api_url: "${OPENSHIFT_API_URL}"
+        token: "${OPENSHIFT_TOKEN}"
+    config:
+      namespaces: []  # Toutes si vide
+      
+  baremetal:
+    enabled: true
+    targets:
+      - target: "10.0.10.0/24"
+        community: "public"
+        snmp_version: "2c"
+
+# ServiceNow Configuration
+servicenow:
+  instance: "${SERVICENOW_INSTANCE}"
+  tables:
+    vm: "cmdb_ci_vm"
+    server: "cmdb_ci_server"
+    k8s_pod: "cmdb_ci_kubernetes_pod"
+    k8s_svc: "cmdb_ci_kubernetes_service"
+    
+# Logging
+logging:
+  level: "INFO"
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  file: "/var/log/cmdb-discovery.log"
+  
+# Monitoring
+monitoring:
+  enabled: true
+  prometheus_port: 9090

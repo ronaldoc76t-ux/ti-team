@@ -1,0 +1,59 @@
+# Logging Configuration
+
+# Log Level: DEBUG, INFO, WARNING, ERROR, CRITICAL
+level: "INFO"
+
+# Format
+format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+
+# Date Format
+date_format: "%Y-%m-%d %H:%M:%S"
+
+# Output
+output:
+  # Console logging
+  console:
+    enabled: true
+    level: "INFO"
+    
+  # File logging
+  file:
+    enabled: true
+    path: "/var/log/cmdb-discovery.log"
+    level: "INFO"
+    max_size_mb: 100
+    backup_count: 5
+    rotation: "daily"  # daily ou size
+    
+  # Syslog (optionnel)
+  syslog:
+    enabled: false
+    host: "localhost"
+    port: 514
+    facility: "local0"
+
+# JSON Logging (pour ELK)
+json:
+  enabled: false
+  pretty: false
+
+# Modules
+modules:
+  # Log level par module
+  collectors:
+    level: "INFO"
+  normalizer:
+    level: "INFO"
+  servicenow:
+    level: "INFO"
+
+# Audit
+audit:
+  # Logger toutes les operations CMDB
+  enabled: true
+  
+  # Destination audit
+  destination: "file"  # file ou syslog
+  
+  # Fichier audit
+  audit_file: "/var/log/cmdb-audit.log"

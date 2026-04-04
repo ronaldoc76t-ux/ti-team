@@ -1,0 +1,93 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cmdb-discovery
+  namespace: ti-operations
+  labels:
+    app: cmdb-discovery
+    tier: backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cmdb-discovery
+  template:
+    metadata:
+      labels:
+        app: cmdb-discovery
+        tier: backend
+    spec:
+      serviceAccountName: cmdb-discovery
+      containers:
+      - name: discovery
+        image: cmdb-discovery:latest
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: CONFIG_PATH
+          value: "/app/config/config.yaml"
+        - name: SERVICENOW_USER
+          valueFrom:
+            secretKeyRef:
+              name: cmdb-servicenow-credentials
+              key: username
+        - name: SERVICENOW_PASS
+          valueFrom:
+            secretKeyRef:
+              name: cmdb-servicenow-credentials
+              key: password
+        - name: VCENTER_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: cmdb-discovery-config
+              key: vcenter_host
+        - name: VCENTER_USER
+          valueFrom:
+            secretKeyRef:
+              name: cmdb-vcenter-credentials
+              key: username
+        - name: VCENTER_PASS
+          valueFrom:
+            secretKeyRef:
+              name: cmdb-vcenter-credentials
+              key: password
+        - name: OPENSHIFT_API_URL
+          valueFrom:
+            configMapKeyRef:
+              name: cmdb-discovery-config
+              key: openshift_api_url
+        - name: OPENSHIFT_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: cmdb-openshift-credentials
+              key: token
+        volumeMounts:
+        - name: config
+          mountPath: /app/config
+          readOnly: true
+        - name: logs
+          mountPath: /var/log
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        livenessProbe:
+          exec:
+            command:
+            - /app/scripts/health-check.sh
+          initialDelaySeconds: 30
+          periodSeconds: 60
+        readinessProbe:
+          exec:
+            command:
+            - /app/scripts/health-check.sh
+          initialDelaySeconds: 10
+          periodSeconds: 10
+      volumes:
+      - name: config
+        configMap:
+          name: cmdb-discovery-config-files
+      - name: logs
+        emptyDir: {}
