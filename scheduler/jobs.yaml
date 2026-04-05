@@ -1,0 +1,183 @@
+# Jobs Configuration - TI Team Scheduler
+
+jobs:
+  # =====================================================
+  # DISCOVERY JOBS
+  # =====================================================
+  
+  # CMDB Discovery quotidien
+  - name: "cmdb-daily-discovery"
+    description: "Daily CMDB discovery for all sources"
+    type: "cron"
+    schedule: "0 2 * * *"
+    agents:
+      - "sysadmin"
+      - "network-engineer"
+    action:
+      type: "execute"
+      command: "/opt/cmdb-discovery/run-discovery.sh"
+    timeout: 3600
+    retry:
+      max_attempts: 3
+      delay: 300
+    notifications:
+      - channel: "telegram"
+        on: ["success", "failure"]
+      - channel: "email"
+        on: ["failure"]
+
+  # =====================================================
+  # HEALTH CHECK JOBS
+  # =====================================================
+  
+  # System health check
+  - name: "system-health-check"
+    description: "Check system health every 15 minutes"
+    type: "interval"
+    interval_minutes: 15
+    agents:
+      - "sysadmin"
+    action:
+      type: "check"
+      checks:
+        - "disk-usage"
+        - "memory-usage"
+        - "cpu-usage"
+        - "service-status"
+
+  # Network health check
+  - name: "network-health-check"
+    description: "Check network connectivity"
+    type: "interval"
+    interval_minutes: 30
+    agents:
+      - "network-engineer"
+    action:
+      type: "check"
+      checks:
+        - "firewall-status"
+        - "vpn-connections"
+        - "bandwidth-usage"
+
+  # =====================================================
+  # SECURITY JOBS
+  # =====================================================
+  
+  # Vulnerability scan nocturne
+  - name: "nightly-vulnerability-scan"
+    description: "Run vulnerability scans nightly"
+    type: "cron"
+    schedule: "0 3 * * *"
+    agents:
+      - "security"
+    action:
+      type: "scan"
+      targets:
+        - "all-hosts"
+        - "containers"
+        - "network-devices"
+    dependencies:
+      - "cmdb-daily-discovery"
+
+  # Weekly access review
+  - name: "weekly-access-review"
+    description: "Weekly review of access permissions"
+    type: "cron"
+    schedule: "0 9 * * 1"
+    agents:
+      - "security"
+      - "technical-lead"
+    action:
+      type: "review"
+      items:
+        - "user-accounts"
+        - "service-accounts"
+        - "ssh-keys"
+        - "api-tokens"
+
+  # =====================================================
+  # BACKUP JOBS
+  # =====================================================
+  
+  # Daily backup
+  - name: "daily-backup"
+    description: "Daily backup of critical data"
+    type: "cron"
+    schedule: "0 4 * * *"
+    agents:
+      - "sysadmin"
+    action:
+      type: "execute"
+      command: "/opt/backup/daily.sh"
+
+  # Weekly backup verification
+  - name: "weekly-backup-verify"
+    description: "Verify backup integrity weekly"
+    type: "cron"
+    schedule: "0 5 * * 0"
+    agents:
+      - "sysadmin"
+    action:
+      type: "execute"
+      command: "/opt/backup/verify.sh"
+
+  # =====================================================
+  # MAINTENANCE JOBS
+  # =====================================================
+  
+  # Weekly config review
+  - name: "weekly-config-review"
+    description: "Weekly review of configurations"
+    type: "cron"
+    schedule: "0 9 * * 1"
+    agents:
+      - "technical-lead"
+      - "network-architect"
+    action:
+      type: "review"
+      items:
+        - "firewall-rules"
+        - "access-lists"
+        - "secrets-expiry"
+        - "certificates"
+
+  # Log rotation
+  - name: "log-rotation"
+    description: "Rotate old logs"
+    type: "cron"
+    schedule: "0 1 * * *"
+    agents:
+      - "sysadmin"
+    action:
+      type: "execute"
+      command: "/usr/sbin/logrotate -f /etc/logrotate.conf"
+
+  # =====================================================
+  # MONITORING JOBS
+  # =====================================================
+  
+  # Metrics collection
+  - name: "metrics-collection"
+    description: "Collect and report metrics"
+    type: "interval"
+    interval_minutes: 5
+    agents:
+      - "sysadmin"
+    action:
+      type: "check"
+      checks:
+        - "prometheus-metrics"
+        - "custom-metrics"
+
+  # Alert verification
+  - name: "alert-verification"
+    description: "Verify alert rules and notifications"
+    type: "cron"
+    schedule: "0 8 * * *"
+    agents:
+      - "sysadmin"
+    action:
+      type: "check"
+      checks:
+        - "alert-rules"
+        - "notification-channels"
